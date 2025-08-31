@@ -1,0 +1,158 @@
+import React, { useState } from "react";
+import { useFetch } from "../../hooks/useFetch";
+import SearchBar from "../SearchBar";
+import { SearchPageContainer, Message, ReleasesGirdContainer, ReleaseCard, ReleaseCover, ReleaseInfo, DetailsLink } from "./style/SearchPageStyle";
+import { addSong, removeSong } from "../../actions";
+import type { RootState } from "../../store";
+import { useDispatch, useSelector } from 'react-redux';
+import { FaHeart } from "react-icons/fa";
+
+interface ArtistCredit {
+    name: string;
+    artist: {
+        id: string;
+        name: string;
+        "sort-name": string;
+        disambiguation?: string;
+    };
+}
+
+
+interface Release {
+    id: string;
+    score: number;
+    "status-id"?: string;
+    "packaging-id"?: string;
+    "artist-credit-id"?: string;
+    count?: number;
+    title: string;
+    status?: string;
+    packaging?: string;
+    "text-representation"?: {
+        language?: string;
+        script?: string;
+    };
+    "artist-credit": {
+        name: string;
+        artist: {
+            id: string;
+            name: string;
+            "sort-name": string;
+            disambiguation?: string;
+        };
+    }[];
+    "release-group"?: {
+        id: string;
+        "type-id"?: string;
+        "primary-type-id"?: string;
+        title: string;
+        "primary-type"?: string;
+        "secondary-types"?: string[];
+        "secondary-type-ids"?: string[];
+    };
+    date?: string;
+    country?: string;
+    "release-events"?: {
+        date?: string;
+        area?: {
+            id: string;
+            name: string;
+            "sort-name": string;
+            "iso-3166-1-codes": string[];
+        };
+    }[];
+    barcode?: string;
+    "label-info"?: {
+        label: {
+            id: string;
+            name: string;
+        };
+    }[];
+    "track-count"?: number;
+    media?: {
+        id: string;
+        format?: string;
+        "disc-count"?: number;
+        "track-count"?: number;
+    }[];
+}
+
+interface Release {
+    created: string;
+    offset: number;
+    "artist-credit": ArtistCredit[];
+    releases: Release[];
+}
+
+interface SearchAlbumResponse {
+    releases: Release[];
+}
+
+function SearchPage() {
+
+    const dispatch = useDispatch();
+    const [artist, setArtist] = useState<string>("");
+    const favorites = useSelector((state: RootState) =>
+            state.songs.songs.map((s) => s.song)
+        );
+    const url =
+        artist !== ""
+            ? `https://musicbrainz.org/ws/2/release/?query=artist:${artist}&fmt=json`
+            : null;
+
+    const { data, loading, error } = useFetch<SearchAlbumResponse>(url);
+
+    const handle_addSong = (song: Release, id: string) => {
+        dispatch(addSong(song, id));
+    };
+
+    const handle_removeSong = (id: string) => {
+        dispatch(removeSong(id));
+    };
+
+    return (
+        <SearchPageContainer  >
+            <h1>Biblioteca Musical</h1>
+            <SearchBar onSearch={setArtist} />
+
+            {loading && <Message type="loading">Cargando datos...</Message>}
+            {error && <Message type="error">Error: {error}</Message>}
+
+            <ReleasesGirdContainer>
+                {data?.releases?.map((r) => (
+                    <ReleaseCard key={r.id}>
+                        <ReleaseCover
+                            alt={r.title}
+                            onError={(e) => (e.currentTarget.src = "/placeholder.webp")}
+                            src={`https://coverartarchive.org/release/${r.id}/front-250`}
+                        />
+                        <ReleaseInfo>
+                            <h3>{r.title}</h3>
+                            <p>🎤 {r["artist-credit"][0]?.name}</p>
+                            <DetailsLink to={`/song/${r.id}`}>
+                                Ver detalles
+                            </DetailsLink>
+                            <FaHeart
+                                onClick={() => {
+                                    if (favorites.some((f) => f.id === r.id)) {
+                                        handle_removeSong(r.id);
+                                    } else {
+                                        handle_addSong(r, r.id);
+                                    }
+                                }}
+                                size={32}
+                                style={{
+                                    cursor: "pointer",
+                                    color: favorites.some((f) => f.id === r.id) ? "red" : "gray",
+                                    transition: "color 0.3s ease",
+                                }}
+                            />
+                        </ReleaseInfo>
+                    </ReleaseCard>
+                ))}
+            </ReleasesGirdContainer>
+        </SearchPageContainer  >
+    );
+}
+
+export default SearchPage;
