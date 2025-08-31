@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Link } from 'react-router-dom';
+import { FaHeart } from "react-icons/fa";
 
 export const SearchPageContainer = styled.div`
   padding: 20px 40px;
@@ -73,4 +74,24 @@ export const DetailsLink = styled(Link)`
   &:hover {
     color: #182848;
   }
+`;
+
+export const HeartButton = styled(FaHeart)<{ active?: boolean }>`
+  cursor: pointer;
+  font-size: 28px;
+  color: ${({ active }) => (active ? "#990000" : "#aaa")};
+  transition: all 0.3s ease;
+  margin-top: 8px;
+
+  &:hover {
+    transform: scale(1.2);
+    color: ${({ active }) => (active ? "#720000ff" : "#ff6b6b")};
+  }
+`;
+
+export const ReleaseActions = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 10px;
 `;

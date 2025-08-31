@@ -1,11 +1,10 @@
 import React, { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import SearchBar from "../SearchBar";
-import { SearchPageContainer, Message, ReleasesGirdContainer, ReleaseCard, ReleaseCover, ReleaseInfo, DetailsLink } from "./style/SearchPageStyle";
+import { SearchPageContainer, Message, ReleasesGirdContainer, ReleaseCard, ReleaseCover, ReleaseInfo, DetailsLink, HeartButton, ReleaseActions } from "./style/SearchPageStyle";
 import { addSong, removeSong } from "../../actions";
 import type { RootState } from "../../store";
 import { useDispatch, useSelector } from 'react-redux';
-import { FaHeart } from "react-icons/fa";
 
 interface ArtistCredit {
     name: string;
@@ -93,8 +92,8 @@ function SearchPage() {
     const dispatch = useDispatch();
     const [artist, setArtist] = useState<string>("");
     const favorites = useSelector((state: RootState) =>
-            state.songs.songs.map((s) => s.song)
-        );
+        state.songs.songs.map((s) => s.song)
+    );
     const url =
         artist !== ""
             ? `https://musicbrainz.org/ws/2/release/?query=artist:${artist}&fmt=json`
@@ -129,24 +128,21 @@ function SearchPage() {
                         <ReleaseInfo>
                             <h3>{r.title}</h3>
                             <p>🎤 {r["artist-credit"][0]?.name}</p>
-                            <DetailsLink to={`/song/${r.id}`}>
-                                Ver detalles
-                            </DetailsLink>
-                            <FaHeart
-                                onClick={() => {
-                                    if (favorites.some((f) => f.id === r.id)) {
-                                        handle_removeSong(r.id);
-                                    } else {
-                                        handle_addSong(r, r.id);
-                                    }
-                                }}
-                                size={32}
-                                style={{
-                                    cursor: "pointer",
-                                    color: favorites.some((f) => f.id === r.id) ? "red" : "gray",
-                                    transition: "color 0.3s ease",
-                                }}
-                            />
+                            <ReleaseActions>
+                                <DetailsLink to={`/song/${r.id}`}>
+                                    Ver detalles
+                                </DetailsLink>
+                                <HeartButton
+                                    active={favorites.some((f) => f.id === r.id)}
+                                    onClick={() => {
+                                        if (favorites.some((f) => f.id === r.id)) {
+                                            handle_removeSong(r.id);
+                                        } else {
+                                            handle_addSong(r, r.id);
+                                        }
+                                    }}
+                                />
+                            </ReleaseActions>
                         </ReleaseInfo>
                     </ReleaseCard>
                 ))}

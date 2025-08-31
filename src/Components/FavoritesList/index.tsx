@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from "../../store";
-import { ReleaseCard, ReleaseInfo, ReleaseCover } from "../Pages/style/SearchPageStyle";
+import { ReleaseCard, ReleaseInfo, ReleaseCover, HeartButton, DetailsLink, ReleaseActions } from "../Pages/style/SearchPageStyle";
 import { addSong, removeSong } from "../../actions";
-import { FaHeart } from "react-icons/fa";
 
 interface Release {
     id: string;
@@ -74,12 +73,12 @@ function FavoritesList() {
     }
 
     const handle_addSong = (song: Release, id: string) => {
-            dispatch(addSong(song, id));
-        };
-    
-        const handle_removeSong = (id: string) => {
-            dispatch(removeSong(id));
-        };
+        dispatch(addSong(song, id));
+    };
+
+    const handle_removeSong = (id: string) => {
+        dispatch(removeSong(id));
+    };
 
     return (
         <div>
@@ -95,21 +94,21 @@ function FavoritesList() {
                         <ReleaseInfo>
                             <h3>{fav.title}</h3>
                             <p>🎤 {fav["artist-credit"][0]?.name}</p>
-                            <FaHeart
-                                                            onClick={() => {
-                                                                if (favorites.some((f) => f.id === fav.id)) {
-                                                                    handle_removeSong(fav.id);
-                                                                } else {
-                                                                    handle_addSong(fav, fav.id);
-                                                                }
-                                                            }}
-                                                            size={32}
-                                                            style={{
-                                                                cursor: "pointer",
-                                                                color: favorites.some((f) => f.id === fav.id) ? "red" : "gray",
-                                                                transition: "color 0.3s ease",
-                                                            }}
-                                                        />
+                            <ReleaseActions>
+                                <DetailsLink to={`/song/${fav.id}`}>
+                                    Ver detalles
+                                </DetailsLink>
+                                <HeartButton
+                                    active={favorites.some((f) => f.id === fav.id)}
+                                    onClick={() => {
+                                        if (favorites.some((f) => f.id === fav.id)) {
+                                            handle_removeSong(fav.id);
+                                        } else {
+                                            handle_addSong(fav, fav.id);
+                                        }
+                                    }}
+                                />
+                            </ReleaseActions>
                         </ReleaseInfo>
                     </ReleaseCard>
                 ))}
