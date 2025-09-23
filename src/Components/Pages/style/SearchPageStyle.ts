@@ -76,16 +76,16 @@ export const DetailsLink = styled(Link)`
   }
 `;
 
-export const HeartButton = styled(FaHeart)<{ active?: boolean }>`
+export const HeartButton = styled(FaHeart)<{ $active?: boolean }>`
   cursor: pointer;
   font-size: 28px;
-  color: ${({ active }) => (active ? "#990000" : "#aaa")};
+  color:  ${({ $active }) => ($active ? "#990000" : "#aaa")};
   transition: all 0.3s ease;
   margin-top: 8px;
 
   &:hover {
     transform: scale(1.2);
-    color: ${({ active }) => (active ? "#720000ff" : "#ff6b6b")};
+    color: ${({ $active }) => ($active ? "#720000" : "#ff6b6b")};
   }
 `;
 

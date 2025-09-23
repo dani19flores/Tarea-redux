@@ -25,7 +25,6 @@ const useFetchMusic = (artist_name:string) => {
         const fetchMusic= async () => {
             try{
                 const response = await axios.get(`https://www.theaudiodb.com/api/v1/json/2/searchalbum.php?s=${artist_name}`);
-                console.log(response.data.album)
                 setMusicState({music:response.data.album,isLoading:false,error:null});
             }catch (error){
                 setMusicState({music:[],isLoading:false,error:`fail to fetch`});

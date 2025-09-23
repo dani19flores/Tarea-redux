@@ -1,79 +1,20 @@
-import React, { useState } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../store";
 import { ReleaseCard, ReleaseInfo, ReleaseCover, HeartButton, DetailsLink, ReleaseActions } from "../Pages/style/SearchPageStyle";
-import { addSong, removeSong } from "../../actions";
+import { RootState } from "../App/store";
 
-interface Release {
-    id: string;
-    score: number;
-    "status-id"?: string;
-    "packaging-id"?: string;
-    "artist-credit-id"?: string;
-    count?: number;
-    title: string;
-    status?: string;
-    packaging?: string;
-    "text-representation"?: {
-        language?: string;
-        script?: string;
-    };
-    "artist-credit": {
-        name: string;
-        artist: {
-            id: string;
-            name: string;
-            "sort-name": string;
-            disambiguation?: string;
-        };
-    }[];
-    "release-group"?: {
-        id: string;
-        "type-id"?: string;
-        "primary-type-id"?: string;
-        title: string;
-        "primary-type"?: string;
-        "secondary-types"?: string[];
-        "secondary-type-ids"?: string[];
-    };
-    date?: string;
-    country?: string;
-    "release-events"?: {
-        date?: string;
-        area?: {
-            id: string;
-            name: string;
-            "sort-name": string;
-            "iso-3166-1-codes": string[];
-        };
-    }[];
-    barcode?: string;
-    "label-info"?: {
-        label: {
-            id: string;
-            name: string;
-        };
-    }[];
-    "track-count"?: number;
-    media?: {
-        id: string;
-        format?: string;
-        "disc-count"?: number;
-        "track-count"?: number;
-    }[];
-}
+import { Release } from "../types";
+import { addSong, removeSong } from "../../state/songs.slice";
 
 function FavoritesList() {
     const dispatch = useDispatch();
-    const favorites = useSelector((state: RootState) =>
-        state.songs.songs.map((s) => s.song)
-    );
+    const favorites = useSelector((state: RootState) => state.songs.songs);
     if (favorites.length === 0) {
         return <p>No tienes favoritos todavía ❤️</p>;
     }
 
-    const handle_addSong = (song: Release, id: string) => {
-        dispatch(addSong(song, id));
+    const handle_addSong = (song: Release) => {
+        dispatch(addSong(song));
     };
 
     const handle_removeSong = (id: string) => {
@@ -93,18 +34,18 @@ function FavoritesList() {
                         />
                         <ReleaseInfo>
                             <h3>{fav.title}</h3>
-                            <p>🎤 {fav["artist-credit"][0]?.name}</p>
+                            <p>🎤 {fav["artist-credit"]?.[0]?.name}</p>
                             <ReleaseActions>
                                 <DetailsLink to={`/song/${fav.id}`}>
                                     Ver detalles
                                 </DetailsLink>
                                 <HeartButton
-                                    active={favorites.some((f) => f.id === fav.id)}
+                                    $active={favorites.some((f) => f.id === fav.id)}
                                     onClick={() => {
                                         if (favorites.some((f) => f.id === fav.id)) {
                                             handle_removeSong(fav.id);
                                         } else {
-                                            handle_addSong(fav, fav.id);
+                                            handle_addSong(fav);
                                         }
                                     }}
                                 />

@@ -19,7 +19,6 @@ export function useFetch<T = unknown>(url: string | null): UseFetchResult<T> {
             setLoading(true);
             try {
                 const res = await axios.get<T>(url);
-                console.log(res)
                 setData(res.data);
                 setError(null);
             } catch (err) {

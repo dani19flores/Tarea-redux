@@ -2,86 +2,11 @@ import React, { useState } from "react";
 import { useFetch } from "../../hooks/useFetch";
 import SearchBar from "../SearchBar";
 import { SearchPageContainer, Message, ReleasesGirdContainer, ReleaseCard, ReleaseCover, ReleaseInfo, DetailsLink, HeartButton, ReleaseActions } from "./style/SearchPageStyle";
-import { addSong, removeSong } from "../../actions";
-import type { RootState } from "../../store";
+import { RootState } from "../App/store";
 import { useDispatch, useSelector } from 'react-redux';
+import { addSong, removeSong } from "../../state/songs.slice";
+import { Release } from "../types";
 
-interface ArtistCredit {
-    name: string;
-    artist: {
-        id: string;
-        name: string;
-        "sort-name": string;
-        disambiguation?: string;
-    };
-}
-
-
-interface Release {
-    id: string;
-    score: number;
-    "status-id"?: string;
-    "packaging-id"?: string;
-    "artist-credit-id"?: string;
-    count?: number;
-    title: string;
-    status?: string;
-    packaging?: string;
-    "text-representation"?: {
-        language?: string;
-        script?: string;
-    };
-    "artist-credit": {
-        name: string;
-        artist: {
-            id: string;
-            name: string;
-            "sort-name": string;
-            disambiguation?: string;
-        };
-    }[];
-    "release-group"?: {
-        id: string;
-        "type-id"?: string;
-        "primary-type-id"?: string;
-        title: string;
-        "primary-type"?: string;
-        "secondary-types"?: string[];
-        "secondary-type-ids"?: string[];
-    };
-    date?: string;
-    country?: string;
-    "release-events"?: {
-        date?: string;
-        area?: {
-            id: string;
-            name: string;
-            "sort-name": string;
-            "iso-3166-1-codes": string[];
-        };
-    }[];
-    barcode?: string;
-    "label-info"?: {
-        label: {
-            id: string;
-            name: string;
-        };
-    }[];
-    "track-count"?: number;
-    media?: {
-        id: string;
-        format?: string;
-        "disc-count"?: number;
-        "track-count"?: number;
-    }[];
-}
-
-interface Release {
-    created: string;
-    offset: number;
-    "artist-credit": ArtistCredit[];
-    releases: Release[];
-}
 
 interface SearchAlbumResponse {
     releases: Release[];
@@ -91,9 +16,7 @@ function SearchPage() {
 
     const dispatch = useDispatch();
     const [artist, setArtist] = useState<string>("");
-    const favorites = useSelector((state: RootState) =>
-        state.songs.songs.map((s) => s.song)
-    );
+    const favorites = useSelector((state: RootState) => state.songs.songs);
     const url =
         artist !== ""
             ? `https://musicbrainz.org/ws/2/release/?query=artist:${artist}&fmt=json`
@@ -101,8 +24,8 @@ function SearchPage() {
 
     const { data, loading, error } = useFetch<SearchAlbumResponse>(url);
 
-    const handle_addSong = (song: Release, id: string) => {
-        dispatch(addSong(song, id));
+    const handle_addSong = (song: Release) => {
+        dispatch(addSong(song));
     };
 
     const handle_removeSong = (id: string) => {
@@ -118,7 +41,9 @@ function SearchPage() {
             {error && <Message type="error">Error: {error}</Message>}
 
             <ReleasesGirdContainer>
-                {data?.releases?.map((r) => (
+            {data?.releases?.map((r) => {
+                const isFavorite = favorites.some(f => f.id === r.id);
+                return (
                     <ReleaseCard key={r.id}>
                         <ReleaseCover
                             alt={r.title}
@@ -133,21 +58,22 @@ function SearchPage() {
                                     Ver detalles
                                 </DetailsLink>
                                 <HeartButton
-                                    active={favorites.some((f) => f.id === r.id)}
+                                    $active={isFavorite}
                                     onClick={() => {
-                                        if (favorites.some((f) => f.id === r.id)) {
+                                        if (isFavorite) {
                                             handle_removeSong(r.id);
                                         } else {
-                                            handle_addSong(r, r.id);
+                                            handle_addSong(r);
                                         }
                                     }}
                                 />
                             </ReleaseActions>
                         </ReleaseInfo>
                     </ReleaseCard>
-                ))}
-            </ReleasesGirdContainer>
-        </SearchPageContainer  >
+                );
+            })}
+        </ReleasesGirdContainer>
+        </SearchPageContainer >
     );
 }
 
