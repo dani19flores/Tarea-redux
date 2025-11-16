@@ -12,7 +12,7 @@ const initialState: SongsState = {
     songs: JSON.parse(localStorage.getItem('favorites') || '[]'),
 };
 
-const songSlice = createSlice({
+const librarySlice = createSlice({
     name: 'song',
     initialState,
     reducers: {
@@ -37,6 +37,6 @@ export interface Song {
 }
 
 
-export const { addSong, removeSong } = songSlice.actions;
-const { reducer: songsReducer } = songSlice;
+export const { addSong, removeSong } = librarySlice.actions;
+const { reducer: songsReducer } = librarySlice;
 export default songsReducer;

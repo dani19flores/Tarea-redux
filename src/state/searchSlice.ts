@@ -34,6 +34,11 @@ export const searchSlice = createSlice({
         setArtist: (state, action) => {
             state.artist = action.payload;
         },
+        resetResults: (state) => {
+            state.releases = [];
+            state.artist = "";
+            state.error = null;
+        },
     },
     extraReducers: (builder) => {
         builder
