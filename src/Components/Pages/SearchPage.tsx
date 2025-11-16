@@ -1,47 +1,45 @@
-import React, { useState } from "react";
-import { useFetch } from "../../hooks/useFetch";
-import SearchBar from "../SearchBar";
-import { SearchPageContainer, Message, ReleasesGirdContainer, ReleaseCard, ReleaseCover, ReleaseInfo, DetailsLink, HeartButton, ReleaseActions } from "./style/SearchPageStyle";
-import { RootState } from "../App/store";
+import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
+import { RootState } from "../App/store";
+import { setArtist, fetchReleases } from "../../state/searchSlice";
 import { addSong, removeSong } from "../../state/songs.slice";
+import SearchBar from "../SearchBar";
+import { 
+    SearchPageContainer, Message, ReleasesGirdContainer, ReleaseCard, 
+    ReleaseCover, ReleaseInfo, DetailsLink, HeartButton, ReleaseActions 
+} from "./style/SearchPageStyle";
 import { Release } from "../types";
-
-
-interface SearchAlbumResponse {
-    releases: Release[];
-}
 
 function SearchPage() {
 
     const dispatch = useDispatch();
-    const [artist, setArtist] = useState<string>("");
+
+    const { artist, releases, loading, error } = useSelector(
+        (state: RootState) => state.search
+    );
+
     const favorites = useSelector((state: RootState) => state.songs.songs);
-    const url =
-        artist !== ""
-            ? `https://musicbrainz.org/ws/2/release/?query=artist:${artist}&fmt=json`
-            : null;
 
-    const { data, loading, error } = useFetch<SearchAlbumResponse>(url);
+    useEffect(() => {
+        if (artist.trim() !== "") {
+            dispatch(fetchReleases(artist) as any);
+        }
+    }, [artist]);
 
-    const handle_addSong = (song: Release) => {
-        dispatch(addSong(song));
-    };
-
-    const handle_removeSong = (id: string) => {
-        dispatch(removeSong(id));
+    const handleSearch = (value: string) => {
+        dispatch(setArtist(value));
     };
 
     return (
         <SearchPageContainer  >
             <h1>Biblioteca Musical</h1>
-            <SearchBar onSearch={setArtist} />
+            <SearchBar onSearch={handleSearch} />
 
             {loading && <Message type="loading">Cargando datos...</Message>}
             {error && <Message type="error">Error: {error}</Message>}
 
             <ReleasesGirdContainer>
-            {data?.releases?.map((r) => {
+            {releases?.map((r) => {
                 const isFavorite = favorites.some(f => f.id === r.id);
                 return (
                     <ReleaseCard key={r.id}>
@@ -59,13 +57,11 @@ function SearchPage() {
                                 </DetailsLink>
                                 <HeartButton
                                     $active={isFavorite}
-                                    onClick={() => {
-                                        if (isFavorite) {
-                                            handle_removeSong(r.id);
-                                        } else {
-                                            handle_addSong(r);
+                                    onClick={() =>
+                                            isFavorite
+                                                ? dispatch(removeSong(r.id))
+                                                : dispatch(addSong(r))
                                         }
-                                    }}
                                 />
                             </ReleaseActions>
                         </ReleaseInfo>

@@ -1,9 +1,13 @@
 import { configureStore } from "@reduxjs/toolkit";
 import songsReducer from "../../state/songs.slice";
+import searchReducer from "../../state/searchSlice";
+import detailsReducer from "../../state/detailsSlice";
 
 export const store = configureStore({
     reducer: {
         songs: songsReducer,
+        search: searchReducer,
+        details: detailsReducer
     },
 });
 
