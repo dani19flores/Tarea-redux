@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
 import { RootState } from "../App/store";
 import { setArtist, fetchReleases } from "../../state/searchSlice";
-import { addSong, removeSong } from "../../state/songs.slice";
+import { addSong, removeSong } from "../../state/librarySlice";
 import SearchBar from "../SearchBar";
 import { 
     SearchPageContainer, Message, ReleasesGirdContainer, ReleaseCard, 

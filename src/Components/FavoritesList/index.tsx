@@ -4,7 +4,7 @@ import { ReleaseCard, ReleaseInfo, ReleaseCover, HeartButton, DetailsLink, Relea
 import { RootState } from "../App/store";
 
 import { Release } from "../types";
-import { addSong, removeSong } from "../../state/songs.slice";
+import { addSong, removeSong } from "../../state/librarySlice";
 
 function FavoritesList() {
     const dispatch = useDispatch();

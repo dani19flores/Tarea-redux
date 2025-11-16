@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import songsReducer from "../../state/songs.slice";
+import songsReducer from "../../state/librarySlice";
 import searchReducer from "../../state/searchSlice";
 import detailsReducer from "../../state/detailsSlice";
 
