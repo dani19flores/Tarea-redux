@@ -77,15 +77,25 @@ export const DetailsLink = styled(Link)`
 `;
 
 export const HeartButton = styled(FaHeart as any)<{ $active?: boolean }>`
+  background: none;
+  border: none;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   font-size: 28px;
   color:  ${({ $active }) => ($active ? "#990000" : "#aaa")};
   transition: all 0.3s ease;
   margin-top: 8px;
+  padding: 0;
 
   &:hover {
     transform: scale(1.2);
     color: ${({ $active }) => ($active ? "#720000" : "#ff6b6b")};
+  }
+
+  svg {
+    pointer-events: none;
   }
 `;
 

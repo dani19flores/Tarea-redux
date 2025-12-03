@@ -8,8 +8,6 @@ import {
     SearchPageContainer, Message, ReleasesGirdContainer, ReleaseCard, 
     ReleaseCover, ReleaseInfo, DetailsLink, HeartButton, ReleaseActions 
 } from "./style/SearchPageStyle";
-import { Release } from "../types";
-
 function SearchPage() {
 
     const dispatch = useDispatch();
@@ -35,8 +33,8 @@ function SearchPage() {
             <h1>Biblioteca Musical</h1>
             <SearchBar onSearch={handleSearch} />
 
-            {loading && <Message type="loading">Cargando datos...</Message>}
-            {error && <Message type="error">Error: {error}</Message>}
+            {loading && <Message type="loading" role="status" aria-live="polite">Cargando datos...</Message>}
+            {error && <Message type="error" role="alert">Error: {error}</Message>}
 
             <ReleasesGirdContainer>
             {releases?.map((r) => {
@@ -57,6 +55,8 @@ function SearchPage() {
                                 </DetailsLink>
                                 <HeartButton
                                     $active={isFavorite}
+                                    aria-pressed={isFavorite}
+                                    aria-label={isFavorite ? "Quitar de favoritos" : "Añadir a favoritos"}
                                     onClick={() =>
                                             isFavorite
                                                 ? dispatch(removeSong(r.id))

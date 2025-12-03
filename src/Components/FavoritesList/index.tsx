@@ -41,6 +41,8 @@ function FavoritesList() {
                                 </DetailsLink>
                                 <HeartButton
                                     $active={favorites.some((f) => f.id === fav.id)}
+                                    aria-pressed={favorites.some((f) => f.id === fav.id)}
+                                    aria-label={favorites.some((f) => f.id === fav.id) ? "Quitar de favoritos" : "Añadir a favoritos"}
                                     onClick={() => {
                                         if (favorites.some((f) => f.id === fav.id)) {
                                             handle_removeSong(fav.id);

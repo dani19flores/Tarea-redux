@@ -19,6 +19,7 @@ function SearchBar({ onSearch }: Props) {
         <SearchBarContainer onSubmit={handleSubmit}>
             <SearchInput
                 type="text"
+                aria-label="Buscar artista"
                 value={artist}
                 onChange={(e) => setArtist(e.target.value)}
                 placeholder="Busca un artista..."
