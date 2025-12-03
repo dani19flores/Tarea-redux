@@ -7,6 +7,7 @@ export const SearchBarContainer = styled.form`
   margin: 20px auto;
   max-width: 500px;
   gap: 10px;
+  position: relative;
 `;
 
 export const SearchInput = styled.input`
@@ -38,4 +39,18 @@ export const SearchButton = styled.button`
     background: linear-gradient(135deg, #182848, #4b6cb7);
     transform: translateY(-2px);
   }
+`;
+
+export const VisuallyHidden = styled.label`
+  border: 0 !important;
+  clip: rect(1px, 1px, 1px, 1px);
+  -webkit-clip-path: inset(50%);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  white-space: nowrap;
 `;

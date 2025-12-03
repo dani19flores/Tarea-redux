@@ -30,13 +30,14 @@ function SearchPage() {
 
     return (
         <SearchPageContainer  >
-            <h1>Biblioteca Musical</h1>
-            <SearchBar onSearch={handleSearch} />
+            <main>
+                <h1>Biblioteca Musical</h1>
+                <SearchBar onSearch={handleSearch} />
 
-            {loading && <Message type="loading" role="status" aria-live="polite">Cargando datos...</Message>}
-            {error && <Message type="error" role="alert">Error: {error}</Message>}
+                {loading && <Message type="loading" role="status" aria-live="polite">Cargando datos...</Message>}
+                {error && <Message type="error" role="alert">Error: {error}</Message>}
 
-            <ReleasesGirdContainer>
+                <ReleasesGirdContainer>
             {releases?.map((r) => {
                 const isFavorite = favorites.some(f => f.id === r.id);
                 return (
@@ -68,7 +69,8 @@ function SearchPage() {
                     </ReleaseCard>
                 );
             })}
-        </ReleasesGirdContainer>
+                </ReleasesGirdContainer>
+            </main>
         </SearchPageContainer >
     );
 }

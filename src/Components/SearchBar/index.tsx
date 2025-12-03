@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { SearchBarContainer, SearchInput, SearchButton } from "./style/SearchBar";
+import { SearchBarContainer, SearchInput, SearchButton, VisuallyHidden } from "./style/SearchBar";
 
 interface Props {
     onSearch: (artist: string) => void;
@@ -17,7 +17,9 @@ function SearchBar({ onSearch }: Props) {
 
     return (
         <SearchBarContainer onSubmit={handleSubmit}>
+            <VisuallyHidden htmlFor="search-input">Buscar artista</VisuallyHidden>
             <SearchInput
+                id="search-input"
                 type="text"
                 aria-label="Buscar artista"
                 value={artist}
