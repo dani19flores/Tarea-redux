@@ -76,7 +76,7 @@ export const DetailsLink = styled(Link)`
   }
 `;
 
-export const HeartButton = styled(FaHeart)<{ $active?: boolean }>`
+export const HeartButton = styled(FaHeart as any)<{ $active?: boolean }>`
   cursor: pointer;
   font-size: 28px;
   color:  ${({ $active }) => ($active ? "#990000" : "#aaa")};

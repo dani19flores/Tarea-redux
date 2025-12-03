@@ -8,10 +8,10 @@ interface HeaderProps {
 const Header = ({ appName }: HeaderProps) => {
     return (
         <Headers>
-            <Logo>{appName}</Logo>
+            <Logo aria-label={appName}>{appName}</Logo>
             <NavLinks>
-                <a href="/">Inicio</a>
-                <a href="/favorites">Favoritos</a> 
+                <a href="/" aria-label="Inicio">Inicio</a>
+                <a href="/favorites" aria-label="Favoritos">Favoritos</a> 
             </NavLinks>
         </Headers>
     )
